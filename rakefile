@@ -1,0 +1,6 @@
+#exec 'gpg --list-packets sks-dump-0000.pgp'
+
+
+#def self.to_text
+#  File.open('dumpfile.txt', 'w') { |f| f.write(self.dump) }
+#end
