@@ -1,4 +1,5 @@
 class SksParser
+  require 'PP'
 
   class StateMachine
     attr_accessor(:dump_hash)
@@ -13,24 +14,26 @@ class SksParser
     S_READING_UID = 0
     S_READING_USER = 1
     S_READING_SIGS = 2
+    S_READING_SUBS = 3
 
     STATE_HASH = {
         S_READING_UID => 'S_READING_UID',
         S_READING_USER => 'S_READING_USER',
         S_READING_SIGS => 'S_READING_SIGS',
+        S_READING_SUBS => 'S_READING_SUBS'
     }
 
     def self.get_dump_hash_from(dump)
       sm = StateMachine.new
-      100.times do |i|
-        sm.process(dump[i])
+      dump.each do |line|
+        sm.process(line)
       end
-      puts sm.dump_hash
+      puts pp(sm.dump_hash)
     end
 
 
     def state=(new_state)
-      puts "Transitioning #{STATE_HASH[@state]}->#{STATE_HASH[new_state]}"
+      #puts "Transitioning #{STATE_HASH[@state]}->#{STATE_HASH[new_state]}"
       @state = new_state
     end
 
@@ -42,6 +45,8 @@ class SksParser
           process_user_line(line)
         when S_READING_SIGS
           process_sig_line(line)
+        when S_READING_SUBS
+          process_sub_line(line)
         else
           raise 'invalid state detected'
       end
@@ -60,6 +65,7 @@ class SksParser
     def process_user_line(line)
       @dump_hash[@keyid][:user] = line.split(' ', 4)[3][1..-2]
       @dump_hash[@keyid][:sigs] = []
+      #puts "adding user: #{@dump_hash[@keyid]}"
       self.state = S_READING_SIGS
     end
 
@@ -68,9 +74,16 @@ class SksParser
         @dump_hash[@keyid][:sigs] << line.split(' ')[5]
       end
       if line.start_with?(':public sub')
+        self.state = S_READING_SUBS
+      end
+    end
+
+    def process_sub_line(line)
+      if line.start_with?(':public key')
         self.state = S_READING_UID
       end
     end
+
   end
 
   def self.dump
