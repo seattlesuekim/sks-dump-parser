@@ -75,6 +75,10 @@ class SksParser
       end
       if line.start_with?(':public sub')
         self.state = S_READING_SUBS
+      elsif line.start_with?(':public key')
+        self.state = S_READING_UID
+      elsif line.start_with?(':user')
+        self.state = S_READING_UID
       end
     end
 
