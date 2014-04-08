@@ -1,1 +1,0 @@
-#exec('wget --recursive --timestamping http://keys.niif.hu/keydump')
