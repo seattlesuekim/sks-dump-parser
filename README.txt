@@ -20,5 +20,6 @@ What You Need
 Download the keydump as specified at: http://www.keysigning.org/sks/
 to get all the files. It will take a while. Be sure your directory contains only the pgp files.
 
+require 'sks_parser'
 A call to SksParser.parse_dump('name_of_your_dir') returns your useful hash.
 
