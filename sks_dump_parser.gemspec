@@ -7,4 +7,7 @@ Gem::Specification.new do |s|
   s.author      = 'Sue White'
   s.email       = 'sue@mailworks.org'
   s.files       = ['lib/sks_parser.rb']
+
+  s.homepage      = 'https://github.com/suewhite/sks-dump-parser'
+
 end
